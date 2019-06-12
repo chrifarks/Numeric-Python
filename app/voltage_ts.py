@@ -39,7 +39,7 @@ class VoltageTimeSeries:
         first_part = (volt_prev_ij - 2 * volt_ij + volt_next_ij) / (self.env.space_step ** 2)
         second_part = first_part * self.env.area / (2 * self.env.resistencia)
         third_part = second_part - self.compute_alphas_and_betas(volt_ij, n, m, h)
-        return third_part * (self.env.time_step / self.env.capacitancia)
+        return third_part * (self.env.time_step / self.env.capacitancia) + volt_ij
 
     def compute_alphas_and_betas(self, volt_ij, n, m, h):
         first_part = self.env.gK * (n ** 4) * (volt_ij - self.env.vK)

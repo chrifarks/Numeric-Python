@@ -28,7 +28,7 @@ def create_file_header(voltage_ts, file, env):
 
 def create_file_body(voltage_ts, file, env):
     for line in range(0, len(voltage_ts)):
-        file.write(str(env.time_step * line))
+        file.write('{:02f}'.format(env.time_step * line))
         for col in range(0, len(voltage_ts[0])):
             file.write(";")
             file.write(str(voltage_ts[line][col]))

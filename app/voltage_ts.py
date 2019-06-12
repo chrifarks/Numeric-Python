@@ -1,10 +1,32 @@
+import math
 from collections import namedtuple
+
+import numpy
 
 
 class VoltageTimeSeries:
 
     def main(self):
         env = self.build_environment()
+        voltage_ts = self.setup_initial_conditions(env)
+
+
+    def setup_initial_conditions(self, env):
+        lines = 1 + int(env.duration / env.time_step)
+        cols = 1 + int(env.bar_length / env.space_step)
+        voltage_ts = numpy.zeros((lines, cols))
+
+        # Setting up voltage for the FIRST line
+        for col in range(0, len(voltage_ts[0])):
+            space_in_cm = col * 10
+            voltage_ts[0][col] = 100 * (math.e ** (-0.2 * space_in_cm))
+
+        # Setting up voltage for the FIRST and LAST cols
+        for line in range(0, len(voltage_ts)):
+            voltage_ts[line][0] = -65.002
+            voltage_ts[line][cols - 1] = 0.0
+
+        return voltage_ts
 
     def build_environment(self):
         env = namedtuple('environment', [

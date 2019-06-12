@@ -2,7 +2,7 @@ import numpy
 import math
 from collections import namedtuple
 from app import coeficient as c
-from app import report
+from app import report as rpt
 
 
 class VoltageTimeSeries:
@@ -14,7 +14,7 @@ class VoltageTimeSeries:
         self.env = VoltageTimeSeries.build_environment()
         voltage_ts = VoltageTimeSeries.setup_initial_conditions(self.env)
         voltage_ts = self.compute_voltage_ts(voltage_ts)
-        report.generate_report(voltage_ts)
+        rpt.generate_report(self.env, voltage_ts, "voltagem-serie-temporal.csv")
 
     def compute_voltage_ts(self, voltage_ts):
         n, m, h = 0.3176, 0.0529, 0.5961

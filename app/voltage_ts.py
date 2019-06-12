@@ -27,9 +27,9 @@ class VoltageTimeSeries:
                     n, m, h
                 )
 
-            c.compute_next_n(voltage, n)
-            c.compute_next_m(voltage, m)
-            c.compute_next_h(voltage, h)
+            n = c.compute_next_n(voltage, n, self.env.time_step)
+            m = c.compute_next_m(voltage, m, self.env.time_step)
+            h = c.compute_next_h(voltage, h, self.env.time_step)
 
         return voltage_ts
 

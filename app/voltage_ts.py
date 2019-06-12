@@ -34,7 +34,10 @@ class VoltageTimeSeries:
         return third_part * (self.env.time_step / self.env.capacitancia)
 
     def compute_alphas_and_betas(self, volt_ij, n, m, h):
-        return 1.0
+        first_part = self.env.gK * (n ** 4) * (volt_ij - self.env.vK)
+        second_part = self.env.gNA * (m ** 3) * h * (volt_ij - self.env.vNA)
+        third_part = self.env.gL * (volt_ij - self.env.vL)
+        return first_part + second_part + third_part
 
     @classmethod
     def setup_initial_conditions(cls, env):

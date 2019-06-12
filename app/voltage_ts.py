@@ -1,7 +1,7 @@
+import numpy
 import math
 from collections import namedtuple
-
-import numpy
+from app import coeficient as c
 
 
 class VoltageTimeSeries:
@@ -16,15 +16,21 @@ class VoltageTimeSeries:
 
     def compute_voltage_ts(self, voltage_ts):
         n, m, h = 0.3176, 0.0529, 0.5961
+        voltage = 0.0
 
         for line in range (1, len(voltage_ts)):
             for col in range(1, len(voltage_ts[0]) - 1):
-                voltage_ts[line][col] = self.compute_next_voltage(
+                voltage = voltage_ts[line][col] = self.compute_next_voltage(
                     voltage_ts[line-1][col-1],
                     voltage_ts[line-1][col],
                     voltage_ts[line-1][col+1],
                     n, m, h
                 )
+
+            c.compute_next_n(voltage, n)
+            c.compute_next_m(voltage, m)
+            c.compute_next_h(voltage, h)
+
         return voltage_ts
 
     def compute_next_voltage(self, volt_prev_ij, volt_ij, volt_next_ij, n, m, h):

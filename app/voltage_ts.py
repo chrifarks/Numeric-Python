@@ -6,12 +6,38 @@ import numpy
 
 class VoltageTimeSeries:
 
+    def __init__(self):
+        self.env = None
+
     def main(self):
-        env = self.build_environment()
-        voltage_ts = self.setup_initial_conditions(env)
+        self.env = VoltageTimeSeries.build_environment()
+        voltage_ts = VoltageTimeSeries.setup_initial_conditions(self.env)
+        voltage_ts = self.compute_voltage_ts(voltage_ts)
 
+    def compute_voltage_ts(self, voltage_ts):
+        n, m, h = 0.3176, 0.0529, 0.5961
 
-    def setup_initial_conditions(self, env):
+        for line in range (1, len(voltage_ts)):
+            for col in range(1, len(voltage_ts[0]) - 1):
+                voltage_ts[line][col] = self.compute_next_voltage(
+                    voltage_ts[line-1][col-1],
+                    voltage_ts[line-1][col],
+                    voltage_ts[line-1][col+1],
+                    n, m, h
+                )
+        return voltage_ts
+
+    def compute_next_voltage(self, volt_prev_ij, volt_ij, volt_next_ij, n, m, h):
+        first_part = (volt_prev_ij - 2 * volt_ij + volt_next_ij) / (self.env.space_step ** 2)
+        second_part = first_part * self.env.area / (2 * self.env.resistencia)
+        third_part = second_part - self.compute_alphas_and_betas(volt_ij, n, m, h)
+        return third_part * (self.env.time_step / self.env.capacitancia)
+
+    def compute_alphas_and_betas(self, volt_ij, n, m, h):
+        return 1.0
+
+    @classmethod
+    def setup_initial_conditions(cls, env):
         lines = 1 + int(env.duration / env.time_step)
         cols = 1 + int(env.bar_length / env.space_step)
         voltage_ts = numpy.zeros((lines, cols))
@@ -28,7 +54,8 @@ class VoltageTimeSeries:
 
         return voltage_ts
 
-    def build_environment(self):
+    @classmethod
+    def build_environment(cls):
         env = namedtuple('environment', [
             'area', 'resistencia', 'capacitancia',
             'gK', 'gNA', 'gL',
